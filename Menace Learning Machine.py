@@ -1,5 +1,5 @@
 flavor = 'RNG'  # Menace Training Type: Adversary, Human, RNG
-trials = 1000000
+trials = 1000000000
 
 if flavor == 'Adversary':
     from TrainingData import Adversary_DiMaggio_TTT_OMove as ost, \
@@ -14,8 +14,11 @@ else:
     print("INVALID TRAINING FLAVOR")
     raise SystemError
 import secrets
+import datetime
 randgen = secrets.SystemRandom()
 
+time1 = datetime.datetime.now()
+print(time1)
 
 class Rewards:
     Menace1_Win = 2
@@ -154,7 +157,7 @@ class Game:
                 OMoveTable.write('class Dictionary:\n')
                 OMoveTable.write(f'\tstates = {Game.OStateTable}')
         elif flavor == 'RNG':
-            with open("TrainingData/RNG_DiMaggio_TTT_Medium.py", "w") as OMoveTable:
+            with open("TrainingData/RNG_DiMaggio_TTT_Impossible.py", "w") as OMoveTable:
                 OMoveTable.write('class Dictionary:\n')
                 OMoveTable.write(f'\tstates = {Game.OStateTable}')
 
@@ -361,9 +364,14 @@ print(f'\n'
       f'X Wins {Game.Xwins} - ({round((Game.Xwins / trials) * 100, 3)}%)\n'
       f'O Wins {Game.Owins} - ({round((Game.Owins / trials) * 100, 3)}%)\n'
       f'Stalemates {Game.Stalemates} - ({round((Game.Stalemates / trials) * 100, 3)}%)')
-fin = input("Update Master Table? (y/n) ")
+fin = "y"
 if fin == "y":
     Game.write_board_X()
     Game.write_board_O()
 else:
     pass
+time2 = datetime.datetime.now()
+print('\n\n')
+print(time2)
+print("DONE!")
+print(f'Time Elapsed: {time2-time1}')

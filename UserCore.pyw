@@ -97,6 +97,14 @@ class SelectDiff:
 
         def set_diff(diff):
             Game.difficulty = diff
+            if diff == "Easy":
+                Game.play_speed = 500
+            elif diff == "Medium":
+                Game.play_speed = 334
+            elif diff == "Hard":
+                Game.play_speed = 168
+            elif diff == "Impossible":
+                Game.play_speed = 0
             self.root.destroy()
         # Settings
         self.button_color = 'light gray'
