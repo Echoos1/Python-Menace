@@ -97,6 +97,14 @@ class SelectDiff:
 
         def set_diff(diff):
             Game.difficulty = diff
+            if diff == "Easy":
+                Game.play_speed = 500
+            elif diff == "Medium":
+                Game.play_speed = 334
+            elif diff == "Hard":
+                Game.play_speed = 168
+            elif diff == "Impossible":
+                Game.play_speed = 0
             self.root.destroy()
         # Settings
         self.button_color = 'light gray'
@@ -198,7 +206,10 @@ class GameWindow:
         self.player_stats.grid(row=1, column=0)
 
         self.drawboard()
-        self.take_turn_AI()
+        if Game.menace == "Player 1":
+            self.take_turn_AI()
+        else:
+            pass
         self.root.wait_visibility()
         self.root.mainloop()
 
@@ -387,7 +398,8 @@ class GameWindow:
     def end_game(self, result):
         print('def end_game()')
         Game.active = 'inactive'
-        if result == "Menace":
+        color = 'red'
+        if (result == "Menace" and Game.menace == 'Player 1') or (result == "Win" and Game.menace == 'Player 2'):
             Game.loss += 1
             self.player_title.config(text='Menace Wins\nClick the board to play again')
             self.player_stats.config(text=f'Wins: {Game.wins}   Stalemates: {Game.stalemates}   Losses: {Game.loss}')
@@ -395,13 +407,14 @@ class GameWindow:
             Game.stalemates += 1
             self.player_title.config(text='Stalemate\nClick the board to play again')
             self.player_stats.config(text=f'Wins: {Game.wins}   Stalemates: {Game.stalemates}   Losses: {Game.loss}')
-        elif result == "Win":
+        elif (result == "Win" and Game.menace == "Player 1") or (result == "Menace" and Game.menace == "Player 2"):
+            color = 'green'
             Game.wins += 1
             self.player_title.config(text='You Win!\nClick the board to play again')
             self.player_stats.config(text=f'Wins: {Game.wins}   Stalemates: {Game.stalemates}   Losses: {Game.loss}')
 
         linewidth = 5
-        color = 'red'
+
 
         if Game.win_type == 0:
             r = 0.9 * self.board_w / 2
@@ -444,7 +457,7 @@ class GameWindow:
             y = self.board_h / 2
             self.main_board.create_line(x - r, y + r, x + r, y - r, width=linewidth, fill=color)
         else:
-            pass
+            self.main_board.config(bg='light gray')
 
 
 diff_select = SelectDiff()

@@ -1,5 +1,5 @@
 flavor = 'RNG'  # Menace Training Type: Adversary, Human, RNG
-trials = 1000000
+trials = 100000000
 
 if flavor == 'Adversary':
     from TrainingData import Adversary_DiMaggio_TTT_OMove as ost, \
@@ -240,7 +240,10 @@ class Game:
                 updated_table[i[0]][1][i[1]] = updated_table[i[0]][1][i[1]] + count
         elif outcome == "Loss":
             for i in Game.XMoves:
-                updated_table[i[0]][1][i[1]] = updated_table[i[0]][1][i[1]] + count
+                if len(updated_table[i[0]][1]) == 8 and updated_table[i[0]][1][i[1]] == 1:
+                    pass
+                else:
+                    updated_table[i[0]][1][i[1]] = updated_table[i[0]][1][i[1]] + count
         Game.XStateTable = updated_table
 
     @staticmethod
@@ -254,16 +257,41 @@ class Game:
                 XMoveTable.write('class Dictionary:\n')
                 XMoveTable.write(f'\tstates = {Game.XStateTable}')
         elif flavor == 'RNG':
-            with open("TrainingData/RNG_DiMaggio_TTT_XMove.py", "w") as XMoveTable:
+            with open("TrainingData/RNG2_DiMaggio_TTT_Hard.py", "w") as XMoveTable:
                 XMoveTable.write('class Dictionary:\n')
                 XMoveTable.write(f'\tstates = {Game.XStateTable}')
 
 
 def X_turn():
-    Game.board[Game.read_board_X(Game.board)] = 'X'
+    #Game.board[Game.read_board_X(Game.board)] = 'X'
+
+    if flavor == 'Adversary':
+        Game.board[Game.read_board_O(Game.board)] = 'X'
+    elif flavor == 'Human':
+        Game.show_board()
+        r = input("Your Move ")
+        try:
+            int(r)
+        except ValueError:
+            print("Please input an integer index of an open space... ")
+            Y_turn()
+        r = int(r)
+        if Game.board[r] != '_':
+            print("That space is taken, please choose another...")
+            Y_turn()
+        elif r > 8:
+            print("Invalid Index, please choose another... ")
+            Y_turn()
+        else:
+            Game.board[r] = 'X'
+    elif flavor == 'RNG':
+        r = randgen.choice(Game.board_spaces)
+        Game.board[r] = 'X'
 
 
 def Y_turn():
+    Game.board[Game.read_board_O(Game.board)] = 'O'
+    """
     if flavor == 'Adversary':
         Game.board[Game.read_board_O(Game.board)] = 'O'
     elif flavor == 'Human':
@@ -286,7 +314,7 @@ def Y_turn():
     elif flavor == 'RNG':
         r = randgen.choice(Game.board_spaces)
         Game.board[r] = 'O'
-
+"""
 
 def play():
     Game.reset()
@@ -363,7 +391,7 @@ print(f'\n'
       f'Stalemates {Game.Stalemates} - ({round((Game.Stalemates / trials) * 100, 3)}%)')
 fin = input("Update Master Table? (y/n) ")
 if fin == "y":
-    Game.write_board_X()
+    #Game.write_board_X()
     Game.write_board_O()
 else:
     pass
